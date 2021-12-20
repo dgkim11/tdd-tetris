@@ -1,5 +1,6 @@
 package example.tdd.tetris.board;
 
+import example.tdd.tetris.block.Block;
 import lombok.Getter;
 
 import java.util.List;
@@ -15,15 +16,73 @@ public class BoardCellsControl {
 
     private int[][] boardCells;
 
+    private Block currentBlock;
+
     public BoardCellsControl(int widthSize, int heightSize) {
         this.widthSize = widthSize;
         this.heightSize = heightSize;
         this.boardCells = new int[heightSize][widthSize];
+        clearBoardCells();
     }
 
-    public void updateCells() {
-        List<Integer> filledRows = FilledRowsFinder.findFilledRows(boardCells);
-        removeRows(filledRows);
+    private void clearBoardCells() {
+        for(int row = 0;row < boardCells.length;row++)  {
+            for(int col = 0;col < boardCells[row].length;col++) {
+                boardCells[row][col] = -1;
+            }
+        }
+    }
+
+    /**
+     * 새롭게 update된 block으로 board cell을 갱신한다.
+     *
+     * @param block
+     * @return 다음 블럭이 필요한지 여부. true - 다음 블럭이 필요함. false - 아직 블럭이 아래로 진행중.
+     */
+    public boolean updateCells(Block block) {
+        if(currentBlock != null) removeCurrentBlock();
+        currentBlock = block;
+        attachNewBlockToBoard(block);
+        if(! canMoveDown(block))    {   // 더 이상 내려갈 수 없다면 cell이 모두 찬 row를 제거하
+            List<Integer> filledRows = FilledRowsFinder.findFilledRows(boardCells);
+            if(filledRows.size() > 0)   {
+                removeRows(filledRows);
+            }
+            currentBlock = null;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canMoveDown(Block block) {
+        int row = block.getYPos() + block.getHeight();
+        if(row >= boardCells.length - 1) return false;  // 보드의 바닥인 경우
+        for(int col = 0;col < block.getWidth();col++) {
+            if(boardCells[row + 1][col + block.getXPos()] != -1) return false;            // 아래에 블럭이 쌓여 있는 경우
+        }
+        return true;
+    }
+
+    private void removeCurrentBlock() {
+        int[][] blockCells = currentBlock.getCells();
+        for(int row = 0;row < blockCells.length;row++)    {
+            for(int col = 0;col < blockCells[row].length;col++) {
+                boardCells[currentBlock.getYPos() + row][currentBlock.getXPos() + col] = -1;
+            }
+        }
+    }
+
+    /**
+     * 블럭의 위치와 모양대로 board에 나오도록 cells을 갱신한다.
+     * @param block
+     */
+    private void attachNewBlockToBoard(Block block) {
+        int[][] blockCells = block.getCells();
+        for(int row = 0;row < blockCells.length;row++)  {
+            for(int col = 0;col < blockCells[0].length;col++)   {
+                boardCells[row + block.getYPos()][col + block.getXPos()] = blockCells[row][col];
+            }
+        }
     }
 
     /**

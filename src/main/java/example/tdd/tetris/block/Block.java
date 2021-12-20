@@ -4,22 +4,38 @@ import lombok.Getter;
 
 @Getter
 public abstract class Block {
-    protected int topPosition;
-    protected int leftPosition;
-    protected int width;
-    protected int height;
+    protected int yPos;
+    protected int xPos;
     protected Direction direction;
     protected int rgbColor;
     protected int[][] cells;
 
-    public Block(int rgbColor)  {
-        this(Direction.NORTH, rgbColor);
-    }
-
-    public Block(Direction direction, int rgbColor) {
+    public Block(Direction direction, int rgbColor, int xPos) {
+        this.direction = direction;
         this.rgbColor = rgbColor;   // 주의사항. rgbColor 설정이 setDirection보다 먼저 호출되어야 함.
-        setDirection(direction);
+        this.xPos = xPos;
     }
 
-    public abstract void setDirection(Direction direction);
+    public Block(Direction direction, int rgbColor, int xPos, int yPos) {
+        this.direction = direction;
+        this.rgbColor = rgbColor;   // 주의사항. rgbColor 설정이 setDirection보다 먼저 호출되어야 함.
+        this.xPos = xPos;
+        this.yPos = yPos;
+    }
+
+    public int getWidth()   {
+        return cells[0].length;
+    }
+    public int getHeight()  {
+        return cells.length;
+    }
+
+    public abstract Block setDirection(Direction direction);
+
+    public abstract Block moveLeft();
+    public abstract Block moveRight();
+    /**
+     * 아래로 한칸 이동한다.
+     */
+    public abstract Block moveDown();
 }

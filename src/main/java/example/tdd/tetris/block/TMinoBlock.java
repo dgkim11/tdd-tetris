@@ -1,16 +1,36 @@
 package example.tdd.tetris.block;
 
 public class TMinoBlock extends Block {
-    public TMinoBlock(int rgbColor) {
-        super(rgbColor);
+    public TMinoBlock(Direction direction, int rgbColor, int xPos) {
+        super(direction, rgbColor, xPos);
+        updateCells();
     }
-
-    public TMinoBlock(Direction direction, int rgbColor) {
-        super(direction, rgbColor);
+    public TMinoBlock(Direction direction, int rgbColor, int xPos, int yPos) {
+        super(direction, rgbColor, xPos, yPos);
+        updateCells();
     }
 
     @Override
-    public void setDirection(Direction direction) {
+    public Block setDirection(Direction direction) {
+        return new TMinoBlock(direction, rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block moveLeft() {
+        return new TMinoBlock(direction, rgbColor, xPos-1, yPos);
+    }
+
+    @Override
+    public Block moveRight() {
+        return new TMinoBlock(direction, rgbColor, xPos+1, yPos);
+    }
+
+    @Override
+    public Block moveDown() {
+        return new TMinoBlock(direction, rgbColor, xPos, yPos+1);
+    }
+
+    public void updateCells() {
         switch (direction)  {
             case NORTH:
                 cells = new int[2][3];

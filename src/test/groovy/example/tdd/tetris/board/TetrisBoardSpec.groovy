@@ -11,4 +11,5 @@ class TetrisBoardSpec extends Specification  {
         sut.getBlockCountOfWidth() == 20
         sut.getBlockCountOfHeight() == 50
     }
+
 }
