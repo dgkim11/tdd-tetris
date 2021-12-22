@@ -5,8 +5,8 @@ import example.tdd.tetris.block.Direction;
 import example.tdd.tetris.block.IMinoBlock;
 
 public class TetrisBoard {
-    private static final int WIDTH_BLOCKS = 20;
-    private static final int HEIGHT_BLOCKS = 50;
+    public static final int WIDTH_BLOCKS = 20;
+    public static final int HEIGHT_BLOCKS = 50;
     private BoardCellsControl boardCellsControl = new BoardCellsControl(WIDTH_BLOCKS, HEIGHT_BLOCKS);
     private Block currentBlock;
 

@@ -12,13 +12,13 @@ public abstract class Block {
 
     public Block(Direction direction, int rgbColor, int xPos) {
         this.direction = direction;
-        this.rgbColor = rgbColor;   // 주의사항. rgbColor 설정이 setDirection보다 먼저 호출되어야 함.
+        this.rgbColor = rgbColor;
         this.xPos = xPos;
     }
 
     public Block(Direction direction, int rgbColor, int xPos, int yPos) {
         this.direction = direction;
-        this.rgbColor = rgbColor;   // 주의사항. rgbColor 설정이 setDirection보다 먼저 호출되어야 함.
+        this.rgbColor = rgbColor;
         this.xPos = xPos;
         this.yPos = yPos;
     }
