@@ -5,11 +5,10 @@ import spock.lang.Specification
 class ZMinoBlockSpec extends Specification {
     def "Z 미노의 기본 방향의 cell 배열정보 검증"()    {
         given: "Z 미노 생성"
-        ZMinoBlock block = new ZMinoBlock(10)
+        ZMinoBlock block = new ZMinoBlock(Direction.NORTH, 10, 0)
 
         when: "기본방향으로 설정"
-        block.setDirection(Direction.NORTH)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.NORTH).getCells()
 
         then:
         cells.length == 2            // height
@@ -24,11 +23,10 @@ class ZMinoBlockSpec extends Specification {
 
     def "Z 미노의 East 방향의 cell 배열정보 검증"()    {
         given: "Z 미노 생성"
-        ZMinoBlock block = new ZMinoBlock(10)
+        ZMinoBlock block = new ZMinoBlock(Direction.NORTH, 10, 0)
 
         when: "East 방향 설정"
-        block.setDirection(Direction.EAST)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.EAST).getCells()
 
         then:
         cells.length == 3            // height
@@ -43,23 +41,23 @@ class ZMinoBlockSpec extends Specification {
 
     def "Z 미노의 South 방향은 North 방향과 동일"()    {
         given: "Z 미노 생성"
-        ZMinoBlock block = new ZMinoBlock(10)
+        ZMinoBlock block = new ZMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        block.setDirection(Direction.SOUTH)
+        ZMinoBlock newBlock = block.setDirection(Direction.SOUTH)
 
         then: "North와 동일"
-        BlockTestHelper.equalCells(block.getCells(), new ZMinoBlock(Direction.NORTH, 10).getCells())
+        BlockTestHelper.equalCells(newBlock.getCells(), new ZMinoBlock(Direction.NORTH, 10, 0).getCells())
     }
 
     def "Z 미노의 West 방향은 East 방향과 동일"()    {
         given: "Z 미노 생성"
-        ZMinoBlock block = new ZMinoBlock(10)
+        ZMinoBlock block = new ZMinoBlock(Direction.NORTH, 10, 0)
 
         when: "West 방향 설정"
-        block.setDirection(Direction.WEST)
+        ZMinoBlock newBlock = block.setDirection(Direction.WEST)
 
         then: "East 방향과 동일"
-        BlockTestHelper.equalCells(block.getCells(), new ZMinoBlock(Direction.EAST, 10).getCells())
+        BlockTestHelper.equalCells(newBlock.getCells(), new ZMinoBlock(Direction.EAST, 10, 0).getCells())
     }
 }

@@ -5,11 +5,10 @@ import spock.lang.Specification
 class LMinoBlockSpec extends Specification {
     def "L 미노의 기본 방향의 cell 배열정보 검증"()    {
         given: "L 미노 생성"
-        LMinoBlock block = new LMinoBlock(10)
+        LMinoBlock block = new LMinoBlock(Direction.NORTH, 10, 0)
 
         when: "기본방향으로 설정"
-        block.setDirection(Direction.NORTH)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.NORTH).getCells()
 
         then:
         cells.length == 3            // height
@@ -24,11 +23,10 @@ class LMinoBlockSpec extends Specification {
 
     def "L 미노의 East의 cell 배열정보 검증"()    {
         given: "L 미노 생성"
-        LMinoBlock block = new LMinoBlock(10)
+        LMinoBlock block = new LMinoBlock(Direction.NORTH, 10, 0)
 
         when: "East 방향 설정"
-        block.setDirection(Direction.EAST)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.EAST).getCells()
 
         then:
         cells.length == 2            // height
@@ -42,11 +40,10 @@ class LMinoBlockSpec extends Specification {
     }
     def "L 미노의 South 방향의 cell 배열정보 검증"()    {
         given: "L 미노 생성"
-        LMinoBlock block = new LMinoBlock(10)
+        LMinoBlock block = new LMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        block.setDirection(Direction.SOUTH)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.SOUTH).getCells()
 
         then:
         cells.length == 3            // height
@@ -60,11 +57,10 @@ class LMinoBlockSpec extends Specification {
     }
     def "L 미노의 West 방향의 cell 배열정보 검증"()    {
         given: "L 미노 생성"
-        LMinoBlock block = new LMinoBlock(10)
+        LMinoBlock block = new LMinoBlock(Direction.NORTH, 10, 0)
 
         when: "West 방향 설정"
-        block.setDirection(Direction.WEST)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.WEST).getCells()
 
         then:
         cells.length == 2            // height

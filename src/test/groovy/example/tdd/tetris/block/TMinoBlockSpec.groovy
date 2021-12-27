@@ -5,11 +5,10 @@ import spock.lang.Specification
 class TMinoBlockSpec extends Specification {
     def "T 미노의 기본 방향의 cell 배열정보 검증"()    {
         given: "T 미노 생성"
-        TMinoBlock iMinoBlock = new TMinoBlock(10)
+        TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
         when: "기본방향으로 설정"
-        iMinoBlock.setDirection(Direction.NORTH)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.NORTH).getCells()
 
         then:
         cells.length == 2            // height
@@ -24,11 +23,10 @@ class TMinoBlockSpec extends Specification {
 
     def "T 미노의 East 방향의 cell 배열정보 검증"()    {
         given: "T 미노 생성"
-        TMinoBlock iMinoBlock = new TMinoBlock(10)
+        TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
         when: "East 방향 설정"
-        iMinoBlock.setDirection(Direction.EAST)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.EAST).getCells()
 
         then:
         cells.length == 3            // height
@@ -43,11 +41,10 @@ class TMinoBlockSpec extends Specification {
 
     def "T 미노의 South 방향의 cell 배열정보 검증"()    {
         given: "T 미노 생성"
-        TMinoBlock iMinoBlock = new TMinoBlock(10)
+        TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        iMinoBlock.setDirection(Direction.SOUTH)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.SOUTH).getCells()
 
         then:
         cells.length == 2            // height
@@ -62,11 +59,10 @@ class TMinoBlockSpec extends Specification {
 
     def "T 미노의 West 방향의 cell 배열정보 검증"()    {
         given: "T 미노 생성"
-        TMinoBlock iMinoBlock = new TMinoBlock(10)
+        TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
         when: "West 방향 설정"
-        iMinoBlock.setDirection(Direction.WEST)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.WEST).getCells()
 
         then:
         cells.length == 3            // height

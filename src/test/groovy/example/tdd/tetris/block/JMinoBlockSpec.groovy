@@ -5,11 +5,10 @@ import spock.lang.Specification
 class JMinoBlockSpec extends Specification {
     def "J 미노의 기본 방향(J 모습)의 cell 배열정보 검증"()    {
         given: "J 미노 생성"
-        JMinoBlock jMinoBlock = new JMinoBlock(10)
+        JMinoBlock jMinoBlock = new JMinoBlock(Direction.NORTH, 10, 0)
 
         when: "기본방향으로 설정"
-        jMinoBlock.setDirection(Direction.NORTH)
-        int[][] cells = jMinoBlock.getCells()
+        int[][] cells = jMinoBlock.setDirection(Direction.NORTH).getCells()
 
         then: 
         cells.length == 3            // height
@@ -24,11 +23,10 @@ class JMinoBlockSpec extends Specification {
 
     def "J 미노의 East 방향(L 모양)의 cell 배열정보 검증"()    {
         given: "J 미노 생성"
-        JMinoBlock jMinoBlock = new JMinoBlock(10)
+        JMinoBlock jMinoBlock = new JMinoBlock(Direction.NORTH, 10, 0)
 
         when: "East 방향 설정"
-        jMinoBlock.setDirection(Direction.EAST)
-        int[][] cells = jMinoBlock.getCells()
+        int[][] cells = jMinoBlock.setDirection(Direction.EAST).getCells()
 
         then: 
         cells.length == 2            // height
@@ -42,11 +40,10 @@ class JMinoBlockSpec extends Specification {
     }
     def "J 미노의 South 방향 cell 배열정보 검증"()    {
         given: "J 미노 생성"
-        JMinoBlock jMinoBlock = new JMinoBlock(10)
+        JMinoBlock jMinoBlock = new JMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        jMinoBlock.setDirection(Direction.SOUTH)
-        int[][] cells = jMinoBlock.getCells()
+        int[][] cells = jMinoBlock.setDirection(Direction.SOUTH).getCells()
 
         then:
         cells.length == 3            // height
@@ -60,11 +57,10 @@ class JMinoBlockSpec extends Specification {
     }
     def "J 미노의 West 방향 cell 배열정보 검증"()    {
         given: "J 미노 생성"
-        JMinoBlock jMinoBlock = new JMinoBlock(10)
+        JMinoBlock jMinoBlock = new JMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        jMinoBlock.setDirection(Direction.SOUTH)
-        int[][] cells = jMinoBlock.getCells()
+        int[][] cells = jMinoBlock.setDirection(Direction.SOUTH).getCells()
 
         then:
         cells.length == 3            // height

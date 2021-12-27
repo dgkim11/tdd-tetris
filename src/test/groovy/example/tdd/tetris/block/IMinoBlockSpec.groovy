@@ -5,11 +5,10 @@ import spock.lang.Specification
 class IMinoBlockSpec extends Specification  {
     def "I 미노의 기본 방향의 cell 배열정보 검증"()    {
         given: "I미노 생성"
-        IMinoBlock iMinoBlock = new IMinoBlock(10)
+        IMinoBlock iMinoBlock = new IMinoBlock(Direction.NORTH, 10, 0)
 
         when: "기본방향으로 설정"
-        iMinoBlock.setDirection(Direction.NORTH)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.NORTH).getCells()
 
         then:
         cells.length == 4            // height
@@ -22,11 +21,10 @@ class IMinoBlockSpec extends Specification  {
 
     def "I 미노의 East 방향 cell 배열정보 검증"()    {
         given: "I미노 생성"
-        IMinoBlock block = new IMinoBlock(10)
+        IMinoBlock block = new IMinoBlock(Direction.NORTH, 10, 0)
 
         when: "East 방향 설정"
-        block.setDirection(Direction.EAST)
-        int[][] cells = block.getCells()
+        int[][] cells = block.setDirection(Direction.EAST).getCells()
 
         then:
         cells.length == 1            // height
@@ -39,25 +37,23 @@ class IMinoBlockSpec extends Specification  {
 
     def "I 미노의 South 방향은 North와 동일"()    {
         given: "I미노 생성"
-        IMinoBlock iMinoBlock = new IMinoBlock(10)
+        IMinoBlock iMinoBlock = new IMinoBlock(Direction.NORTH, 10, 0)
 
         when: "South 방향 설정"
-        iMinoBlock.setDirection(Direction.SOUTH)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.SOUTH).getCells()
 
         then: "North 방향과 동일"
-        BlockTestHelper.equalCells(cells, new IMinoBlock(Direction.NORTH, 10).getCells())
+        BlockTestHelper.equalCells(cells, new IMinoBlock(Direction.NORTH, 10, 0).getCells())
     }
 
     def "I 미노의 West 방향은 East와 동일"()    {
         given: "I미노 생성"
-        IMinoBlock iMinoBlock = new IMinoBlock(10)
+        IMinoBlock iMinoBlock = new IMinoBlock(Direction.NORTH, 10, 0)
 
         when: "West 방향 설정"
-        iMinoBlock.setDirection(Direction.WEST)
-        int[][] cells = iMinoBlock.getCells()
+        int[][] cells = iMinoBlock.setDirection(Direction.WEST).getCells()
 
         then: "East 방향과 동일"
-        BlockTestHelper.equalCells(cells, new IMinoBlock(Direction.EAST, 10).getCells())
+        BlockTestHelper.equalCells(cells, new IMinoBlock(Direction.EAST, 10, 0).getCells())
     }
 }

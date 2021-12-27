@@ -4,7 +4,7 @@ import example.tdd.tetris.board.TetrisBoard
 import spock.lang.Ignore
 import spock.lang.Specification
 
-@Ignore
+@Ignore // random 생성이기에 test case로 작성하기 어려움. 코드의 동작 여부 확인을 위해 만들었기에 코드 작성 후 ignore 처리함.
 class BlockFactorySpec extends Specification {
     def "블럭의 모양, 색깔, 방향등은 random으로 생성된다."() {
         BlockFactory sut = new BlockFactory()
