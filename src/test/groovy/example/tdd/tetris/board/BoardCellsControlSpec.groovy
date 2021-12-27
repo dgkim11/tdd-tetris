@@ -5,7 +5,10 @@ import example.tdd.tetris.block.BlockTestHelper
 import example.tdd.tetris.block.DiffPoint
 import example.tdd.tetris.block.Direction
 import example.tdd.tetris.block.IMinoBlock
+import example.tdd.tetris.block.JMinoBlock
+import example.tdd.tetris.block.LMinoBlock
 import example.tdd.tetris.block.TMinoBlock
+import example.tdd.tetris.block.ZMinoBlock
 import spock.lang.Specification
 
 class BoardCellsControlSpec extends Specification {
@@ -13,13 +16,13 @@ class BoardCellsControlSpec extends Specification {
         BoardCellsControl sut = new BoardCellsControl(5,5)
 
         given: "보드에 블럭이 존재한다."
-        Block block = new TMinoBlock(Direction.EAST, 100, 0)       // ㅏ 모양
-        sut.updateCells(block)
+        Block block = new TMinoBlock(Direction.WEST, 100, 0)       // ㅏ 모양
+        sut.updateBlock(block)
         int[][] curCells = BlockTestHelper.copyArray(sut.getBoardCells())
 
         when: "보드에서 한칸 내려간다."
         Block upatedBlock = block.moveDown()
-        sut.updateCells(upatedBlock)
+        sut.updateBlock(upatedBlock)
         List<DiffPoint> diffPointList = BlockTestHelper.findDiffs(curCells, sut.getBoardCells())
 
         then: "보드의 cell들이 갱신된다."
@@ -47,7 +50,7 @@ class BoardCellsControlSpec extends Specification {
         given:
         IMinoBlock block = new IMinoBlock(Direction.EAST, 50, 0, 4)    // ㅡ 모양으로 바닥에 떨어짐.
         when:
-        boolean nextBlock = sut.updateCells(block)
+        boolean nextBlock = sut.updateBlock(block)
         int[][] boardCells = new int[5][5]
         boardCells[0] = [-1,-1,-1,-1,-1]
         boardCells[1] = [-1,-1,-1,-1,-1]
@@ -67,8 +70,8 @@ class BoardCellsControlSpec extends Specification {
         IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 4, 1)   // ㅣ 모양으로 오른쪽 끝에 떨어짐.
 
         when:
-        sut.updateCells(block1)
-        sut.updateCells(block2)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
         int[][] updatedCells = new int[5][5]
         updatedCells[0] = [-1,-1,-1,-1,-1]
         updatedCells[1] = [-1,-1,-1,-1,-1]
@@ -80,4 +83,188 @@ class BoardCellsControlSpec extends Specification {
         BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
     }
 
+    def "오른쪽으로 이동할 수 있는 공간이 있는 경우 오른쪽으로 한칸 이동한다."() {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 4, 1)   // ㅣ 모양으로 오른쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 3, 1)   // ㅣ 모양으로 오른쪽 두번째.
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+
+        when:
+        TMinoBlock tblock = new TMinoBlock(Direction.NORTH, 30, 1, 0)
+        sut.updateBlock(tblock)
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,30,30,30,-1]
+        updatedCells[1] = [-1,-1,30,50,50]
+        updatedCells[2] = [-1,-1,-1,50,50]
+        updatedCells[3] = [-1,-1,-1,50,50]
+        updatedCells[4] = [-1,-1,-1,50,50]
+
+        then:
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+
+    def "오른쪽으로 이동할 수 없는 경우 제자리에 있는다."() {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 4, 1)   // ㅣ 모양으로 오른쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 3, 1)   // ㅣ 모양으로 오른쪽 두번째.
+        TMinoBlock tblock = new TMinoBlock(Direction.NORTH, 30, 1, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(tblock)
+        when:
+        boolean updated = sut.updateBlock(tblock.moveRight())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,30,30,30,-1]
+        updatedCells[1] = [-1,-1,30,50,50]
+        updatedCells[2] = [-1,-1,-1,50,50]
+        updatedCells[3] = [-1,-1,-1,50,50]
+        updatedCells[4] = [-1,-1,-1,50,50]
+
+        then:
+        ! updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+
+    def "왼쪽으로 이동할 수 있는 공간이 있는 경우 왼쪽으로 한칸 이동한다."() {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 4, 1)   // ㅣ 모양으로 오른쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 3, 1)   // ㅣ 모양으로 오른쪽 두번째.
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+
+        when:
+        TMinoBlock tblock = new TMinoBlock(Direction.NORTH, 30, 0, 0)
+        sut.updateBlock(tblock)
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [30,30,30,-1,-1]
+        updatedCells[1] = [-1,30,-1,50,50]
+        updatedCells[2] = [-1,-1,-1,50,50]
+        updatedCells[3] = [-1,-1,-1,50,50]
+        updatedCells[4] = [-1,-1,-1,50,50]
+
+        then:
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+    def "왼쪽으로 이동할 수 없는 경우 제자리에 있는다."() {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 0, 1)   // ㅣ 모양으로 왼쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 1, 1)   // ㅣ 모양으로 왼쪽 두번째.
+        TMinoBlock tblock = new TMinoBlock(Direction.NORTH, 30, 1, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(tblock)
+        when:
+        boolean updated = sut.updateBlock(tblock.moveLeft())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,30,30,30,-1]
+        updatedCells[1] = [50,50,30,-1,-1]
+        updatedCells[2] = [50,50,-1,-1,-1]
+        updatedCells[3] = [50,50,-1,-1,-1]
+        updatedCells[4] = [50,50,-1,-1,-1]
+
+        then:
+        ! updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+    def "우회전할 수 있는 경우 우회전 한다."()    {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 0, 1)   // ㅣ 모양으로 왼쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 1, 1)   // ㅣ 모양으로 왼쪽 두번째.
+        TMinoBlock tblock = new TMinoBlock(Direction.NORTH, 30, 2, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(tblock)
+        when:
+        boolean updated = sut.updateBlock(tblock.turnRight())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,-1,-1,30,-1]
+        updatedCells[1] = [50,50,30,30,-1]
+        updatedCells[2] = [50,50,-1,30,-1]
+        updatedCells[3] = [50,50,-1,-1,-1]
+        updatedCells[4] = [50,50,-1,-1,-1]
+
+        then:
+        updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+    def "좌회전할 수 있는 경우 좌회전 한다."()    {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 4, 1)   // ㅣ 모양으로 왼쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 3, 1)   // ㅣ 모양으로 왼쪽 두번째.
+        LMinoBlock lblock = new LMinoBlock(Direction.NORTH, 30, 0, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(lblock)
+        when:
+        boolean updated = sut.updateBlock(lblock.turnLeft())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,-1,30,-1,-1]
+        updatedCells[1] = [30,30,30,50,50]
+        updatedCells[2] = [-1,-1,-1,50,50]
+        updatedCells[3] = [-1,-1,-1,50,50]
+        updatedCells[4] = [-1,-1,-1,50,50]
+
+        then:
+        updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+    def "우회전할 수 없는 경우 블럭은 갱신되지 않는다."()    {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 0, 1)
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 1, 1)
+        ZMinoBlock zblock = new ZMinoBlock(Direction.NORTH, 30, 1, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(zblock)
+        when:
+        boolean updated = sut.updateBlock(zblock.turnRight())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,30,30,-1,-1]
+        updatedCells[1] = [50,50,30,30,-1]
+        updatedCells[2] = [50,50,-1,-1,-1]
+        updatedCells[3] = [50,50,-1,-1,-1]
+        updatedCells[4] = [50,50,-1,-1,-1]
+
+        then:
+        ! updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
+    def "좌회전할 수 없는 경우 블럭은 갱신되지 않는다."()    {
+        BoardCellsControl sut = new BoardCellsControl(5,5)
+
+        given:
+        IMinoBlock block1 = new IMinoBlock(Direction.NORTH, 50, 0, 1)   // ㅣ 모양으로 왼쪽 끝에 떨어짐.
+        IMinoBlock block2 = new IMinoBlock(Direction.NORTH, 50, 1, 1)   // ㅣ 모양으로 왼쪽 두번째.
+        JMinoBlock jblock = new JMinoBlock(Direction.WEST, 30, 1, 0)
+        sut.updateBlock(block1)
+        sut.updateBlock(block2)
+        sut.updateBlock(jblock)
+        when:
+        boolean updated = sut.updateBlock(jblock.turnLeft())
+        int[][] updatedCells = new int[5][5]
+        updatedCells[0] = [-1,30,30,30,-1]
+        updatedCells[1] = [50,50,-1,30,-1]
+        updatedCells[2] = [50,50,-1,-1,-1]
+        updatedCells[3] = [50,50,-1,-1,-1]
+        updatedCells[4] = [50,50,-1,-1,-1]
+
+        then:
+        ! updated
+        BlockTestHelper.equalCells(sut.getBoardCells(), updatedCells)
+    }
 }

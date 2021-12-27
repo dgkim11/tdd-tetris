@@ -30,6 +30,16 @@ public class ZMinoBlock extends Block {
         return new ZMinoBlock(direction, rgbColor, xPos, yPos+1);
     }
 
+    @Override
+    public Block turnLeft() {
+        return new ZMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new ZMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
     public void updateCells() {
         if(direction == Direction.NORTH || direction == Direction.SOUTH)    {
             cells = new int[2][3];

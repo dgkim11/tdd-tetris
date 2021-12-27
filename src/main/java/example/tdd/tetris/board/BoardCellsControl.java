@@ -34,31 +34,58 @@ public class BoardCellsControl {
     }
 
     /**
-     * 새롭게 update된 block으로 board cell을 갱신한다.
+     * 위치나 모양이 변경된 block으로 다시 update 한다. 만약, 위치나 모양이 바뀔 수 없는 경우는 현재 블럭으로 유지한다.
      *
      * @param block
-     * @return 다음 블럭이 필요한지 여부. true - 다음 블럭이 필요함. false - 아직 블럭이 아래로 진행중.
+     * @return 블럭이 갱신되었는지 여부. true - 갱신됨, false - 갱신되지 않음.
      */
-    public boolean updateCells(Block block) {
+    public boolean updateBlock(Block block) {
         if(currentBlock != null) removeCurrentBlock();
+        if(! canMove(block))    {
+            if(currentBlock != null) attachBlockToBoard(currentBlock);       // 현재 블럭으로 다시 원위치.
+            return false;      // 해당 위치로 이동할 수 없는 경우 block을 갱신하지 않는다.
+        }
         currentBlock = block;
-        attachNewBlockToBoard(block);
-        if(! canMoveDown(block))    {   // 더 이상 내려갈 수 없다면 cell이 모두 찬 row를 제거하
+        attachBlockToBoard(block);
+        if(! canMoveDown(block))    {   // 더 이상 내려갈 수 없다면 cell이 모두 찬 row를 제거한다.
             List<Integer> filledRows = FilledRowsFinder.findFilledRows(boardCells);
             if(filledRows.size() > 0)   {
                 removeRows(filledRows);
             }
             currentBlock = null;
-            return true;
         }
-        return false;
+        return true;
     }
 
+    private boolean canMove(Block block)    {
+        int row = block.getYPos() + block.getHeight();
+        if(row >= boardCells.length + 1) return false;  // 보드의 바닥인 경우
+        if(block.getXPos() < 0) return false;       // 왼쪽 보드 영역을 벗어난 경우
+        if(block.getXPos() + block.getWidth() >= boardCells[0].length + 1) return false;  // 오른쪽 보드 영역을 벗어난 경우
+        for(int i = 0;i < block.getHeight();i++)   {
+            for(int j = 0;j < block.getWidth();j++) {
+                if(boardCells[i + block.getYPos()][j + block.getXPos()] != -1 && block.getCells()[i][j] != -1)  {   // 이미 다른 블럭이 공간을 차지하고 있는 경우
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean needNewBlock()  {
+        return currentBlock == null;
+    }
+
+    /**
+     * 현재의 block
+     * @param block
+     * @return
+     */
     private boolean canMoveDown(Block block) {
         int row = block.getYPos() + block.getHeight();
-        if(row >= boardCells.length - 1) return false;  // 보드의 바닥인 경우
+        if(row >= boardCells.length) return false;  // 보드의 바닥인 경우
         for(int col = 0;col < block.getWidth();col++) {
-            if(boardCells[row + 1][col + block.getXPos()] != -1) return false;            // 아래에 블럭이 쌓여 있는 경우
+            if(boardCells[row][col + block.getXPos()] != -1) return false;            // 아래에 블럭이 쌓여 있는 경우
         }
         return true;
     }
@@ -76,11 +103,13 @@ public class BoardCellsControl {
      * 블럭의 위치와 모양대로 board에 나오도록 cells을 갱신한다.
      * @param block
      */
-    private void attachNewBlockToBoard(Block block) {
+    private void attachBlockToBoard(Block block) {
         int[][] blockCells = block.getCells();
         for(int row = 0;row < blockCells.length;row++)  {
             for(int col = 0;col < blockCells[0].length;col++)   {
-                boardCells[row + block.getYPos()][col + block.getXPos()] = blockCells[row][col];
+                if(blockCells[row][col] != -1)  {
+                    boardCells[row + block.getYPos()][col + block.getXPos()] = blockCells[row][col];
+                }
             }
         }
     }

@@ -25,6 +25,16 @@ public class OMinoBlock extends Block {
     }
 
     @Override
+    public Block turnLeft() {
+        return new OMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new OMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
+    @Override
     public Block moveDown() {
         return new OMinoBlock(direction, rgbColor, xPos, yPos+1);
     }

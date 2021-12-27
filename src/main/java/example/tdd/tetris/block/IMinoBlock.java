@@ -26,6 +26,16 @@ public class IMinoBlock extends Block {
     }
 
     @Override
+    public Block turnLeft() {
+        return new IMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new IMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
+    @Override
     public Block moveDown() {
         return new IMinoBlock(direction, rgbColor, xPos, yPos+1);
     }

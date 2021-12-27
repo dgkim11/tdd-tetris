@@ -25,18 +25,18 @@ class TMinoBlockSpec extends Specification {
         given: "T 미노 생성"
         TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
-        when: "East 방향 설정"
+        when: "West 방향 설정"
         int[][] cells = iMinoBlock.setDirection(Direction.EAST).getCells()
 
         then:
         cells.length == 3            // height
         cells[0].length == 2         // width
-        cells[0][0] == 10
-        cells[0][1] == -1
+        cells[0][0] == -1
+        cells[0][1] == 10
         cells[1][0] == 10
         cells[1][1] == 10
-        cells[2][0] == 10
-        cells[2][1] == -1
+        cells[2][0] == -1
+        cells[2][1] == 10
     }
 
     def "T 미노의 South 방향의 cell 배열정보 검증"()    {
@@ -61,17 +61,18 @@ class TMinoBlockSpec extends Specification {
         given: "T 미노 생성"
         TMinoBlock iMinoBlock = new TMinoBlock(Direction.NORTH, 10, 0)
 
-        when: "West 방향 설정"
+        when: "East 방향 설정"
         int[][] cells = iMinoBlock.setDirection(Direction.WEST).getCells()
 
         then:
         cells.length == 3            // height
         cells[0].length == 2         // width
-        cells[0][0] == -1
-        cells[0][1] == 10
+        cells[0][0] == 10
+        cells[0][1] == -1
         cells[1][0] == 10
         cells[1][1] == 10
-        cells[2][0] == -1
-        cells[2][1] == 10
+        cells[2][0] == 10
+        cells[2][1] == -1
     }
+
 }

@@ -24,6 +24,6 @@ public class TetrisBoard {
 
     private void moveDown() {
         currentBlock.moveDown();
-        boardCellsControl.updateCells(currentBlock);
+        boardCellsControl.updateBlock(currentBlock);
     }
 }

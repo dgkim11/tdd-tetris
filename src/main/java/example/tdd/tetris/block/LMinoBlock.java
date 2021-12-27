@@ -26,6 +26,16 @@ public class LMinoBlock extends Block {
     }
 
     @Override
+    public Block turnLeft() {
+        return new LMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new LMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
+    @Override
     public Block moveDown() {
         return new LMinoBlock(direction, rgbColor, xPos, yPos+1);
     }

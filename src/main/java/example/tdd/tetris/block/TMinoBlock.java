@@ -26,6 +26,16 @@ public class TMinoBlock extends Block {
     }
 
     @Override
+    public Block turnLeft() {
+        return new TMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new TMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
+    @Override
     public Block moveDown() {
         return new TMinoBlock(direction, rgbColor, xPos, yPos+1);
     }
@@ -43,12 +53,12 @@ public class TMinoBlock extends Block {
                 break;
             case EAST:
                 cells = new int[3][2];
-                cells[0][0] = rgbColor;
-                cells[0][1] = -1;
+                cells[0][0] = -1;
+                cells[0][1] = rgbColor;
                 cells[1][0] = rgbColor;
                 cells[1][1] = rgbColor;
-                cells[2][0] = rgbColor;
-                cells[2][1] = -1;
+                cells[2][0] = -1;
+                cells[2][1] = rgbColor;
                 break;
             case SOUTH:
                 cells = new int[2][3];
@@ -61,12 +71,12 @@ public class TMinoBlock extends Block {
                 break;
             case WEST:
                 cells = new int[3][2];
-                cells[0][0] = -1;
-                cells[0][1] = rgbColor;
+                cells[0][0] = rgbColor;
+                cells[0][1] = -1;
                 cells[1][0] = rgbColor;
                 cells[1][1] = rgbColor;
-                cells[2][0] = -1;
-                cells[2][1] = rgbColor;
+                cells[2][0] = rgbColor;
+                cells[2][1] = -1;
                 break;
         }
     }

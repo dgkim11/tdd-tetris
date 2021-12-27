@@ -26,6 +26,16 @@ public class SMinoBlock extends Block {
     }
 
     @Override
+    public Block turnLeft() {
+        return new SMinoBlock(getNextDirection(Turn.LEFT), rgbColor, xPos, yPos);
+    }
+
+    @Override
+    public Block turnRight() {
+        return new SMinoBlock(getNextDirection(Turn.RIGHT), rgbColor, xPos, yPos);
+    }
+
+    @Override
     public Block moveDown() {
         return new SMinoBlock(direction, rgbColor, xPos, yPos+1);
     }
