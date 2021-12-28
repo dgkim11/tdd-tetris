@@ -17,11 +17,13 @@ public class BoardCellsControl {
     private int[][] boardCells;
 
     private Block currentBlock;
+    private boolean needNewBlock;
 
     public BoardCellsControl(int widthSize, int heightSize) {
         this.widthSize = widthSize;
         this.heightSize = heightSize;
         this.boardCells = new int[heightSize][widthSize];
+        this.needNewBlock = true;
         clearBoardCells();
     }
 
@@ -31,6 +33,11 @@ public class BoardCellsControl {
                 boardCells[row][col] = -1;
             }
         }
+    }
+
+    public boolean newBlock(Block block)    {
+        needNewBlock = false;
+        return updateBlock(block);
     }
 
     /**
@@ -52,6 +59,7 @@ public class BoardCellsControl {
             if(filledRows.size() > 0)   {
                 removeRows(filledRows);
             }
+            needNewBlock = true;
             currentBlock = null;
         }
         return true;
@@ -70,10 +78,6 @@ public class BoardCellsControl {
             }
         }
         return true;
-    }
-
-    private boolean needNewBlock()  {
-        return currentBlock == null;
     }
 
     /**
