@@ -14,6 +14,9 @@ public class TetrisBoard {
     @Getter
     private Block currentBlock;
     private static int INTERVAL = 1000;
+    private static int POINT = 10;
+    @Getter
+    private long score;
 
     public int getBlockCountOfWidth() {
         return WIDTH_BLOCKS;
@@ -29,23 +32,30 @@ public class TetrisBoard {
         this.blockFactory = blockFactory;
     }
 
-    public Block newBlock()  {
+    public UpdateBoardResult newBlock()  {
         currentBlock = blockFactory.generateRandomBlock();
-        boardCellsControl.newBlock(currentBlock);
-        return currentBlock;
+        return updateBlock(currentBlock);
     }
 
-    public void moveDownBlock() {
+    public UpdateBoardResult moveDownBlock() {
         currentBlock = currentBlock.moveDown();
-        boardCellsControl.updateBlock(currentBlock);
+        return updateBlock(currentBlock);
+    }
+
+    private UpdateBoardResult updateBlock(Block block) {
+        UpdateBoardResult result = boardCellsControl.updateBlock(block);
+        score += (long) result.getRemovedRows() * POINT;
+        System.out.println("score:" + score);
+        return result;
     }
 
     public void startGame() {
+        this.score = 0;
         timer = new Timer();
         timer.scheduleAtFixedRate(new BlockDownTask(this), 0, INTERVAL);
     }
 
-    public boolean needNewBlock() {
-        return boardCellsControl.isNeedNewBlock();
+    public void gameOver() {
+        timer.cancel();
     }
 }

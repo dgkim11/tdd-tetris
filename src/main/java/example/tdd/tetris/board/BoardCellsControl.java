@@ -17,13 +17,11 @@ public class BoardCellsControl {
     private int[][] boardCells;
 
     private Block currentBlock;
-    private boolean needNewBlock;
 
     public BoardCellsControl(int widthSize, int heightSize) {
         this.widthSize = widthSize;
         this.heightSize = heightSize;
         this.boardCells = new int[heightSize][widthSize];
-        this.needNewBlock = true;
         clearBoardCells();
     }
 
@@ -35,23 +33,26 @@ public class BoardCellsControl {
         }
     }
 
-    public boolean newBlock(Block block)    {
-        needNewBlock = false;
-        return updateBlock(block);
-    }
-
     /**
      * 위치나 모양이 변경된 block으로 다시 update 한다. 만약, 위치나 모양이 바뀔 수 없는 경우는 현재 블럭으로 유지한다.
      *
      * @param block
      * @return 블럭이 갱신되었는지 여부. true - 갱신됨, false - 갱신되지 않음.
      */
-    public boolean updateBlock(Block block) {
+    public UpdateBoardResult updateBlock(Block block) {
         if(currentBlock != null) removeCurrentBlock();
+
+        // 블럭이 해당 위치로 움직일 수 없는 경우
         if(! canMove(block))    {
-            if(currentBlock != null) attachBlockToBoard(currentBlock);       // 현재 블럭으로 다시 원위치.
-            return false;      // 해당 위치로 이동할 수 없는 경우 block을 갱신하지 않는다.
+            if (block.getYPos() == 0)         // 블럭의 위치가 가장 높은 곳인데도 움직일 수 없다면 game over.
+                return new UpdateBoardResult(false, false, 0, true);
+            if(currentBlock != null) {
+                attachBlockToBoard(currentBlock);       // 현재 블럭으로 다시 원위치.
+            }
+            return new UpdateBoardResult(false, false, 0, false);      // 해당 위치로 이동할 수 없는 경우 block을 갱신하지 않는다.
         }
+
+        // 블럭이 해당 위치로 이동할 수 있는 경우
         currentBlock = block;
         attachBlockToBoard(block);
         if(! canMoveDown(block))    {   // 더 이상 내려갈 수 없다면 cell이 모두 찬 row를 제거한다.
@@ -59,10 +60,10 @@ public class BoardCellsControl {
             if(filledRows.size() > 0)   {
                 removeRows(filledRows);
             }
-            needNewBlock = true;
             currentBlock = null;
+            return new UpdateBoardResult(true, true, filledRows.size(), false);
         }
-        return true;
+        return new UpdateBoardResult(true, false, 0, false);
     }
 
     private boolean canMove(Block block)    {
