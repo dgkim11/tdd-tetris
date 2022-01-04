@@ -1,6 +1,7 @@
 package example.tdd.tetris.block;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Block {

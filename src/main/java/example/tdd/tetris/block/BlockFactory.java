@@ -12,7 +12,7 @@ public class BlockFactory {
 
     @Getter
     public enum Color   {
-        BLUE(0x0000ff), YELLOW(0xffff00), RED(0xff0000), GREEN(0x009900);
+        BLUE(0x0000ff), YELLOW(0xffff00), RED(0xff0000), GREEN(0x00ff00);
 
         int rgbColor;
         Color(int rgbColor) {

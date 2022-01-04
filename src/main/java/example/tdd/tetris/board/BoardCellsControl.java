@@ -10,22 +10,22 @@ import java.util.List;
  */
 @Getter
 public class BoardCellsControl {
-    private final int widthSize;
-    private final int heightSize;
+    private int widthSize;
+    private int heightSize;
     private final int EMPTY_CELL = -1;
 
     private int[][] boardCells;
 
     private Block currentBlock;
 
-    public BoardCellsControl(int widthSize, int heightSize) {
-        this.widthSize = widthSize;
-        this.heightSize = heightSize;
-        this.boardCells = new int[heightSize][widthSize];
+    public void setSize(int width, int height)   {
+        this.widthSize = width;
+        this.heightSize = height;
+        this.boardCells = new int[height][width];
         clearBoardCells();
     }
 
-    private void clearBoardCells() {
+    public void clearBoardCells() {
         for(int row = 0;row < boardCells.length;row++)  {
             for(int col = 0;col < boardCells[row].length;col++) {
                 boardCells[row][col] = -1;
@@ -36,44 +36,67 @@ public class BoardCellsControl {
     /**
      * 위치나 모양이 변경된 block으로 다시 update 한다. 만약, 위치나 모양이 바뀔 수 없는 경우는 현재 블럭으로 유지한다.
      *
-     * @param block
-     * @return 블럭이 갱신되었는지 여부. true - 갱신됨, false - 갱신되지 않음.
+     * @param block 신규 블럭.
+     * @return update된 경우 true, update 할 수 없는 경우 false.
      */
-    public UpdateBoardResult updateBlock(Block block) {
+    public boolean updateBlock(Block block)  {
+        // 블럭을 이동시키려면 현재의 블럭을 먼저 지운 후 다음 위치로 블럭을 다시 그린다.
         if(currentBlock != null) removeCurrentBlock();
 
-        // 블럭이 해당 위치로 움직일 수 없는 경우
-        if(! canMove(block))    {
-            if (block.getYPos() == 0)         // 블럭의 위치가 가장 높은 곳인데도 움직일 수 없다면 game over.
-                return new UpdateBoardResult(false, false, 0, true);
-            if(currentBlock != null) {
-                attachBlockToBoard(currentBlock);       // 현재 블럭으로 다시 원위치.
-            }
-            return new UpdateBoardResult(false, false, 0, false);      // 해당 위치로 이동할 수 없는 경우 block을 갱신하지 않는다.
+        // 해당 위치에 블럭을 위치시킬 수 있는지.
+        if(! canLocateBlock(block))    {
+            if(currentBlock != null) attachBlockToBoard(currentBlock);
+            return false;
         }
 
-        // 블럭이 해당 위치로 이동할 수 있는 경우
-        currentBlock = block;
         attachBlockToBoard(block);
+        currentBlock = block;
+
+        return true;
+    }
+
+    public UpdateBoardResult updateBoard(Block block)   {
         if(! canMoveDown(block))    {   // 더 이상 내려갈 수 없다면 cell이 모두 찬 row를 제거한다.
             List<Integer> filledRows = FilledRowsFinder.findFilledRows(boardCells);
             if(filledRows.size() > 0)   {
                 removeRows(filledRows);
+                currentBlock = null;
+                return removedRowsResult(filledRows);
+            } else {
+                if (block.getYPos() == 0)    {
+                    return gameOverResult();
+                } else  {
+                    currentBlock = null;
+                    return newBlockResult();
+                }
             }
-            currentBlock = null;
-            return new UpdateBoardResult(true, true, filledRows.size(), false);
         }
+        return continueResult();
+    }
+
+    private UpdateBoardResult removedRowsResult(List<Integer> filledRows) {
+        return new UpdateBoardResult(true, true, filledRows.size(), false);
+    }
+
+    private UpdateBoardResult continueResult() {
         return new UpdateBoardResult(true, false, 0, false);
     }
 
-    private boolean canMove(Block block)    {
-        int row = block.getYPos() + block.getHeight();
-        if(row >= boardCells.length + 1) return false;  // 보드의 바닥인 경우
+    private UpdateBoardResult newBlockResult() {
+        return new UpdateBoardResult(true, true, 0, false);
+    }
+
+    private UpdateBoardResult gameOverResult() {
+        return new UpdateBoardResult(false, false, 0, true);
+    }
+
+    private boolean canLocateBlock(Block block)    {
+        if(block.getYPos() + block.getHeight() > boardCells.length) return false;  // 보드의 바닥인 경우
         if(block.getXPos() < 0) return false;       // 왼쪽 보드 영역을 벗어난 경우
-        if(block.getXPos() + block.getWidth() >= boardCells[0].length + 1) return false;  // 오른쪽 보드 영역을 벗어난 경우
-        for(int i = 0;i < block.getHeight();i++)   {
-            for(int j = 0;j < block.getWidth();j++) {
-                if(boardCells[i + block.getYPos()][j + block.getXPos()] != -1 && block.getCells()[i][j] != -1)  {   // 이미 다른 블럭이 공간을 차지하고 있는 경우
+        if(block.getXPos() + block.getWidth() > boardCells[0].length) return false;  // 오른쪽 보드 영역을 벗어난 경우
+        for(int row = 0;row < block.getHeight();row++)   {
+            for(int col = 0;col < block.getWidth();col++) {
+                if(boardCells[row + block.getYPos()][col + block.getXPos()] != -1 && block.getCells()[row][col] != -1)  {   // 이미 다른 블럭이 공간을 차지하고 있는 경우
                     return false;
                 }
             }
@@ -99,7 +122,7 @@ public class BoardCellsControl {
         int[][] blockCells = currentBlock.getCells();
         for(int row = 0;row < blockCells.length;row++)    {
             for(int col = 0;col < blockCells[row].length;col++) {
-                boardCells[currentBlock.getYPos() + row][currentBlock.getXPos() + col] = -1;
+                if(blockCells[row][col] != -1) boardCells[currentBlock.getYPos() + row][currentBlock.getXPos() + col] = -1;
             }
         }
     }
