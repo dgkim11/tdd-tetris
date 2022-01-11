@@ -51,8 +51,8 @@ public class JMinoBlock extends Block {
             cells[2][1] = rgbColor;
         } else if(direction == Direction.EAST)  {
             cells = new int[2][3];
-            cells[0][0] = -1;
-            cells[0][1] = rgbColor;
+            cells[0][0] = rgbColor;
+            cells[0][1] = -1;
             cells[0][2] = -1;
             cells[1][0] = rgbColor;
             cells[1][1] = rgbColor;
@@ -60,11 +60,11 @@ public class JMinoBlock extends Block {
         } else if(direction == Direction.SOUTH)  {
             cells = new int[3][2];
             cells[0][0] = rgbColor;
-            cells[0][1] = -1;
-            cells[1][0] = -1;
-            cells[1][1] = rgbColor;
+            cells[0][1] = rgbColor;
+            cells[1][0] = rgbColor;
+            cells[1][1] = -1;
             cells[2][0] = rgbColor;
-            cells[2][1] = rgbColor;
+            cells[2][1] = -1;
         } else   {              // WEST
             cells = new int[2][3];
             cells[0][0] = rgbColor;

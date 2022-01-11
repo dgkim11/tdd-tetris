@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.util.Timer;
 
 public class TetrisBoard {
-    public static final int WIDTH_BLOCKS = 20;
-    public static final int HEIGHT_BLOCKS = 50;
+    public static final int WIDTH_BLOCKS = 10;
+    public static final int HEIGHT_BLOCKS = 20;
     private BoardCellsControl boardCellsControl;
     private BlockFactory blockFactory;
     @Setter
